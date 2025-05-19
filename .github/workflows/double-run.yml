@@ -1,0 +1,46 @@
+name: Daily Double Run
+
+on:
+  schedule:
+    - cron: "0 18 * * *"   # 8 PM UTC
+    - cron: "5 18 * * *"   # 8:05 PM UTC
+  workflow_dispatch:        # Manual trigger
+
+jobs:
+  run-jan:
+    name: Run for Jan
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '0 18 * * *' || github.event_name == 'workflow_dispatch'
+    env:
+      Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Run script
+        run: python run_miner.py
+
+  run-marusa:
+    name: Run for Marusa
+    runs-on: ubuntu-latest
+    if: github.event.schedule == '5 18 * * *' || github.event_name == 'workflow_dispatch'
+    env:
+      Auth_bearer: ${{ secrets.MARUSA_AUTH_BEARER}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Run script
+        run: python mine.py
