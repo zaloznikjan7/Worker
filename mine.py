@@ -3,8 +3,12 @@ import requests
 import json
 import time
 
-if os.path.exists("delay.json"):
-    with open("delay.json", "r") as f:
+user = os.getenv("USER_ID", "default")
+delay_file = f"delay_{user}.json"
+
+# Load delay value if file exists
+if os.path.exists(delay_file):
+    with open(delay_file, "r") as f:
         delay = json.load(f).get("minutes", 0)
 else:
     delay = 0
@@ -41,6 +45,9 @@ response = requests.post(url, headers=headers, data=json.dumps(data))
 print("Status:", response.status_code)
 print("Response:", response.text)
 
-new_delay = delay + 2
-with open("delay.json", "w") as f:
+new_delay = delay + 5
+
+with open(delay_file, "w") as f:
     json.dump({"minutes": new_delay}, f)
+
+print(f"Updated delay for {user}: {new_delay} minutes")
