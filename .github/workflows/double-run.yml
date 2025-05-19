@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.schedule == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
+      USER_ID: jan
       Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
       API_URL: ${{ secrets.API_URL }}
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
@@ -45,6 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.schedule == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
+      USER_ID: marusa
       Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
       API_URL: ${{ secrets.API_URL }}
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
