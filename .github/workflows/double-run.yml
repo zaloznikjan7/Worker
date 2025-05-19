@@ -23,6 +23,9 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: Install dependencies
+        run: pip install requests
+
       - name: Run script
         run: python mine.py
 
@@ -41,6 +44,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+
+      - name: Install dependencies
+        run: pip install requests
 
       - name: Run script
         run: python mine.py
