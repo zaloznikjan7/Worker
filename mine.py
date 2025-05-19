@@ -3,7 +3,7 @@ import requests
 import json
 
 
-token = os.getenv("auth_marusa")
+token = os.getenv("Auth_bearer")
 
 url = "https://socialchain.app/api/proof_of_presences"
 
