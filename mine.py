@@ -45,7 +45,7 @@ response = requests.post(url, headers=headers, data=json.dumps(data))
 print("Status:", response.status_code)
 print("Response:", response.text)
 
-new_delay = delay + 5
+new_delay = delay + 2
 
 with open(delay_file, "w") as f:
     json.dump({"minutes": new_delay}, f)
