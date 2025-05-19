@@ -29,6 +29,14 @@ jobs:
       - name: Run script
         run: python mine.py
 
+      - name: Commit updated delay
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add delay.json
+          git commit -m "Update delay"
+          git push
+
   run-marusa:
     name: Run for Marusa
     runs-on: ubuntu-latest
@@ -50,3 +58,11 @@ jobs:
 
       - name: Run script
         run: python mine.py
+
+      - name: Commit updated delay
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add delay.json
+          git commit -m "Update delay"
+          git push
