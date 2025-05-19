@@ -1,7 +1,16 @@
 import os
 import requests
 import json
+import time
 
+if os.path.exists("delay.json"):
+    with open("delay.json", "r") as f:
+        delay = json.load(f).get("minutes", 0)
+else:
+    delay = 0
+
+print(f"Delaying execution by {delay} minutes...")
+time.sleep(delay * 60)
 
 token = os.getenv("Auth_bearer")
 
@@ -30,3 +39,7 @@ data = {
 response = requests.post(url, headers=headers, data=json.dumps(data))
 print("Status:", response.status_code)
 print("Response:", response.text)
+
+new_delay = delay + 2
+with open("delay.json", "w") as f:
+    json.dump({"minutes": new_delay}, f)
