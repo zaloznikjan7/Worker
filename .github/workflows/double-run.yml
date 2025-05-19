@@ -37,9 +37,10 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase  # 👈 Add this
           git add delay_${{ env.USER_ID }}.json
-          git commit -m "Update delay for ${{ env.USER_ID }}"
-          git push
+          git commit -m "Update delay for ${{ env.USER_ID }}" || echo "No changes to commit"
+          git push origin main
 
   run-marusa:
     name: Run for Marusa
@@ -71,6 +72,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase  # 👈 Add this
           git add delay_${{ env.USER_ID }}.json
-          git commit -m "Update delay for ${{ env.USER_ID }}"
-          git push
+          git commit -m "Update delay for ${{ env.USER_ID }}" || echo "No changes to commit"
+          git push origin main
