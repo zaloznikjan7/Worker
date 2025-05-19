@@ -25,6 +25,7 @@ headers = {
 
 data = {
     "recaptcha_token": None 
+        }
 
 response = requests.post(url, headers=headers, data=json.dumps(data))
 print("Status:", response.status_code)
