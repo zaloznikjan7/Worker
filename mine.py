@@ -43,8 +43,8 @@ headers = {
 
 payload = {"recaptcha_token": None}
 
-for i in range(1, 11):
-    print(f"[{user}] Attempt {i}/10…")
+for i in range(1, 6):
+    print(f"[{user}] Attempt {i}/5…")
     try:
         r = requests.post(api_url, headers=headers, json=payload)
         print(f"[{user}] Status {r.status_code}")
@@ -62,7 +62,7 @@ for i in range(1, 11):
     except Exception as e:
         print(f"[{user}] ❌ Exception:", e)
 
-    if i < 10:
+    if i < 5:
         print(f"[{user}] ⏳ Sleeping 60 s before retry…")
         time.sleep(60)
 
