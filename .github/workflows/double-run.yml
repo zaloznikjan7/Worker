@@ -2,24 +2,21 @@ name: Daily Double Run
 
 on:
   schedule:
-    - cron: "0 19 * * *"   # 19 PM UTC
-    - cron: "5 19 * * *"   # 19:05 PM UTC
-  workflow_dispatch:        # Manual trigger
+    - cron: "0 19 * * *"   # 19:00 UTC daily
+  workflow_dispatch:      # allow manual triggering
 
 jobs:
   run-jan:
     name: Run for Jan
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
       USER_ID: jan
       Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
-      API_URL: ${{ secrets.API_URL }}
+      API_URL:     ${{ secrets.API_URL }}
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
-      HOST_NAME: ${{ secrets.HOST_NAME }}
-
+      HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -27,56 +24,33 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install requests
         run: pip install requests
 
-      - name: Run script
+      - name: Run miner for Jan
         run: python mine.py
 
-      - name: Run script with retry
-        run: |
-          for i in {1..5}; do
-            echo "Attempt $i..."
-            if python mine.py; then
-              echo "✅ Success on attempt $i"
-              break
-            else
-              echo "❌ Failed on attempt $i"
-              if [ $i -lt 5 ]; then
-                echo "⏳ Retrying in 60 seconds..."
-                sleep 60
-              else
-                echo "💥 All 5 attempts failed"
-                exit 1
-              fi
-            fi
-          done
-
-      - name: Commit updated delay
+      - name: Commit updated state
+        if: ${{ success() }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git add delay_${{ env.USER_ID }}.json
-          git commit -m "Update delay for ${{ env.USER_ID }}" || echo "No changes to commit"
-          
-          git pull origin main --rebase  # now safe because commit is done
-          git push origin main
+          git add state_${{ env.USER_ID }}.json
+          git commit -m "Update state for ${{ env.USER_ID }}" || echo "No changes"
+          git push
 
   run-marusa:
-    name: Run for Marusa
+    name: Run for Maruša
     runs-on: ubuntu-latest
     needs: run-jan
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
       USER_ID: marusa
-      Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
-      API_URL: ${{ secrets.API_URL }}
+      Auth_bearer: ${{ secrets.MARUSA_AUTH_BEARER }}
+      API_URL:     ${{ secrets.API_URL }}
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
-      HOST_NAME: ${{ secrets.HOST_NAME }}
-
+      HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -84,38 +58,17 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: Install requests
         run: pip install requests
 
-      - name: Run script
+      - name: Run miner for Maruša
         run: python mine.py
 
-      - name: Run script with retry
-        run: |
-          for i in {1..5}; do
-            echo "Attempt $i..."
-            if python mine.py; then
-              echo "✅ Success on attempt $i"
-              break
-            else
-              echo "❌ Failed on attempt $i"
-              if [ $i -lt 5 ]; then
-                echo "⏳ Retrying in 60 seconds..."
-                sleep 60
-              else
-                echo "💥 All 5 attempts failed"
-                exit 1
-              fi
-            fi
-          done
-
-      - name: Commit updated delay
+      - name: Commit updated state
+        if: ${{ success() }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          
-          git add delay_${{ env.USER_ID }}.json
-          git commit -m "Update delay for ${{ env.USER_ID }}" || echo "No changes to commit"
-          
-          git pull origin main --rebase  # now safe because commit is done
-          git push origin main
+          git add state_${{ env.USER_ID }}.json
+          git commit -m "Update state for ${{ env.USER_ID }}" || echo "No changes"
+          git push
