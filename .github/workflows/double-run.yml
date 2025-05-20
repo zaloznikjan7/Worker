@@ -33,6 +33,25 @@ jobs:
       - name: Run script
         run: python mine.py
 
+      - name: Run script with retry
+        run: |
+          for i in {1..5}; do
+            echo "Attempt $i..."
+            if python mine.py; then
+              echo "✅ Success on attempt $i"
+              break
+            else
+              echo "❌ Failed on attempt $i"
+              if [ $i -lt 5 ]; then
+                echo "⏳ Retrying in 60 seconds..."
+                sleep 60
+              else
+                echo "💥 All 5 attempts failed"
+                exit 1
+              fi
+            fi
+          done
+
       - name: Commit updated delay
         run: |
           git config --global user.name "github-actions[bot]"
@@ -70,6 +89,25 @@ jobs:
 
       - name: Run script
         run: python mine.py
+
+      - name: Run script with retry
+        run: |
+          for i in {1..5}; do
+            echo "Attempt $i..."
+            if python mine.py; then
+              echo "✅ Success on attempt $i"
+              break
+            else
+              echo "❌ Failed on attempt $i"
+              if [ $i -lt 5 ]; then
+                echo "⏳ Retrying in 60 seconds..."
+                sleep 60
+              else
+                echo "💥 All 5 attempts failed"
+                exit 1
+              fi
+            fi
+          done
 
       - name: Commit updated delay
         run: |
