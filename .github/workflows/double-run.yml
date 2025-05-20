@@ -16,11 +16,13 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - run: pip install requests
+          
+      - name: Install requests
+        run: pip install requests
 
       - name: Run Jan’s mining step
         run: python mine.py
@@ -45,11 +47,13 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-      - run: pip install requests
+          
+      - name: Install requests
+        run: pip install requests
 
       - name: Run Maruša’s mining step
         run: python mine.py
