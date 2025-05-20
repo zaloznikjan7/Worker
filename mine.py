@@ -1,5 +1,6 @@
 import os, json, time, requests
 from datetime import datetime, timedelta, timezone
+print(f"***DEBUG: starting mine.py for {os.getenv('USER_ID')}***")
 
 user = os.getenv("USER_ID", "default")
 state_file = f"state_{user}.json"
