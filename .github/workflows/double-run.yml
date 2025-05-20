@@ -2,8 +2,8 @@ name: Daily Double Run
 
 on:
   schedule:
-    - cron: "0 18 * * *"   # 8 PM UTC
-    - cron: "5 18 * * *"   # 8:05 PM UTC
+    - cron: "0 19 * * *"   # 19 PM UTC
+    - cron: "5 19 * * *"   # 19:05 PM UTC
   workflow_dispatch:        # Manual trigger
 
 jobs:
@@ -47,6 +47,7 @@ jobs:
   run-marusa:
     name: Run for Marusa
     runs-on: ubuntu-latest
+    needs: run-jan
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
       USER_ID: marusa
