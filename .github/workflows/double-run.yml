@@ -10,7 +10,7 @@ jobs:
   run-jan:
     name: Run for Jan
     runs-on: ubuntu-latest
-    if: github.event.schedule == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
       USER_ID: jan
       Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
@@ -47,7 +47,7 @@ jobs:
   run-marusa:
     name: Run for Marusa
     runs-on: ubuntu-latest
-    if: github.event.schedule == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     env:
       USER_ID: marusa
       Auth_bearer: ${{ secrets.JAN_AUTH_BEARER }}
