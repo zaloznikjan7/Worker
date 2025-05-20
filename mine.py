@@ -61,7 +61,7 @@ for i in range(1, 11):
     except Exception as e:
         print(f"[{user}] ❌ Exception:", e)
 
-    if i < 5:
+    if i < 10:
         print(f"[{user}] ⏳ Sleeping 60 s before retry…")
         time.sleep(60)
 
