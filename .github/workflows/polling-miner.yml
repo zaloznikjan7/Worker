@@ -2,8 +2,8 @@ name: Polling Miner
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
-  workflow_dispatch:
+    - cron: "*/5 * * * *"    # every 5 minutes UTC
+  workflow_dispatch:        # manual trigger
 
 jobs:
   run-jan:
@@ -16,11 +16,14 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
+      - name: Check out code             # <–– This was missing
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          
+
       - name: Install requests
         run: pip install requests
 
@@ -47,11 +50,14 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
+      - name: Check out code             # <–– And here
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
-          
+
       - name: Install requests
         run: pip install requests
 
