@@ -1,13 +1,13 @@
-name: Daily Double Run
+name: Polling Miner
 
 on:
   schedule:
-    - cron: "0 19 * * *"   # 19:00 UTC daily
-  workflow_dispatch:      # allow manual triggering
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 jobs:
   run-jan:
-    name: Run for Jan
+    name: Jan’s Miner
     runs-on: ubuntu-latest
     env:
       USER_ID: jan
@@ -16,33 +16,28 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+      - run: pip install requests
 
-      - name: Install requests
-        run: pip install requests
-
-      - name: Run miner for Jan
+      - name: Run Jan’s mining step
         run: python mine.py
 
-      - name: Commit updated state
+      - name: Commit state (on success)
         if: ${{ success() }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add state_${{ env.USER_ID }}.json
-          git commit -m "Update state for ${{ env.USER_ID }}" || echo "No changes"
+          git add state_jan.json
+          git commit -m "Update next_run for jan" || echo "No change"
           git push
 
   run-marusa:
-    name: Run for Maruša
-    runs-on: ubuntu-latest
+    name: Maruša’s Miner
     needs: run-jan
+    runs-on: ubuntu-latest
     env:
       USER_ID: marusa
       Auth_bearer: ${{ secrets.MARUSA_AUTH_BEARER }}
@@ -50,25 +45,20 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.10"
+      - run: pip install requests
 
-      - name: Install requests
-        run: pip install requests
-
-      - name: Run miner for Maruša
+      - name: Run Maruša’s mining step
         run: python mine.py
 
-      - name: Commit updated state
+      - name: Commit state (on success)
         if: ${{ success() }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add state_${{ env.USER_ID }}.json
-          git commit -m "Update state for ${{ env.USER_ID }}" || echo "No changes"
+          git add state_marusa.json
+          git commit -m "Update next_run for marusa" || echo "No change"
           git push
