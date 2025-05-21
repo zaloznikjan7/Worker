@@ -51,7 +51,7 @@ for i in range(1, 6):
         if r.status_code == 200:
             body = r.json()
             expires_at = datetime.fromisoformat(
-                body["proof_of_presence"]["expires_at"].rstrip("Z")
+                body["expires_at"].rstrip("Z")
             ).replace(tzinfo=timezone.utc)
             
             new_next = expires_at + timedelta(seconds=20)
