@@ -21,16 +21,16 @@ async function checkAndToggle() {
   const solaredgeUrl    = process.env.SOLAREDGE_URL;
   const solaredgeToken = process.env.SOLAREDGE_TOKEN;
   const solaredgeClient = process.env.SOLAREDGE_CLIENT;
-  const solaredgeRemmemberMeCookie = process.env.SOLAREDGE_CLIENT;
+  const solaredgeRemmemberMeCookie = process.env.SOLAREDGE_REMMEMBER_COOKIE;
   const solaredgeSSO = process.env.SOLAREDGE_SSO;
   const solaredgeID = process.env.SOLAREDGE_ID;
 
   const cookieString = 
     `CSRF-TOKEN=${solaredgeToken}; ` +
-    `SolarEdge_Client-1.6=${solaredgeToken} `; +
+    `SolarEdge_Client-1.6=${solaredgeClient} `; +
     'SolarEdge_Locale=en_US '; +
     `SolarEdge_SSO-1.4=${solaredgeSSO} `; +
-    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${SOLAREDGE_REMMEMBER_COOKIE} `; +
+    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${solaredgeRemmemberMeCookie} `; +
     `SolarEdge_Field_ID=${solaredgeID}`,
 
   const headers = {
