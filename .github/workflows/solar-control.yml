@@ -1,0 +1,35 @@
+name: Solar Heating Control
+
+# Run every 5 min between 11–18 UTC (i.e. last at 18:55)
+on:
+  schedule:
+    - cron: "*/5 11-18 * * *"
+  workflow_dispatch:
+
+jobs:
+  control:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 16
+        uses: actions/setup-node@v4
+        with:
+          node-version: "16"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run solar control
+        run: node solar-control.js
+        env:
+          # SolarEdge
+          SOLAREDGE_URL:    ${{ secrets.SOLAREDGE_URL }}
+          SOLAREDGE_COOKIE: ${{ secrets.SOLAREDGE_COOKIE }}
+          # eWeLink
+          EWELINK_EMAIL:    ${{ secrets.EWELINK_EMAIL }}
+          EWELINK_PASSWORD: ${{ secrets.EWELINK_PASSWORD }}
+          EWELINK_REGION:   ${{ secrets.EWELINK_REGION }}
+          EWELINK_APP_ID:   ${{ secrets.EWELINK_APP_ID }}
+          EWELINK_APP_SECRET: ${{ secrets.EWELINK_APP_SECRET }}
