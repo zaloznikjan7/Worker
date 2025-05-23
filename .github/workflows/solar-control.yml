@@ -24,6 +24,8 @@ jobs:
         env:
           SOLAREDGE_URL:    ${{ secrets.SOLAREDGE_URL }}
           SOLAREDGE_COOKIE: ${{ secrets.SOLAREDGE_COOKIE }}
+          SOLAREDGE_CLIENT:    ${{ secrets.SOLAREDGE_CLIENT }}
+          SOLAREDGE_TOKEN: ${{ secrets.SOLAREDGE_TOKEN }}
           EWELINK_EMAIL:    ${{ secrets.EWELINK_EMAIL }}
           EWELINK_PASSWORD: ${{ secrets.EWELINK_PASSWORD }}
           EWELINK_REGION:   ${{ secrets.EWELINK_REGION }}
