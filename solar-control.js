@@ -22,13 +22,20 @@ async function checkAndToggle() {
   const solaredgeUrl    = process.env.SOLAREDGE_URL;
   const solaredgeCookie = process.env.SOLAREDGE_COOKIE;
   let data;
+  const headers = {
+    // match browser exactly
+    "Accept":            "application/json, text/plain, */*",
+    "Accept-Language":   "en-GB,en;q=0.9,sl;q=0.8",
+    "Referer":           "https://monitoring.solaredge.com/solaredge-web/p/site/3406940/",
+    "User-Agent":        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+                         "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                         "Chrome/122.0.0.0 Safari/537.36",
+    "X-Requested-With":  "XMLHttpRequest",
+    "Cookie":            solaredgeCookie
+  };
+  
   try {
-    const resp = await axios.get(solaredgeUrl, {
-      headers: {
-        Cookie: solaredgeCookie,
-        Accept: "application/json"
-      }
-    });
+    const resp = await axios.get(solaredgeUrl, { headers });
     data = resp.data;
   } catch (e) {
     console.error("❌ Failed to fetch SolarEdge:", e.message);
