@@ -21,10 +21,18 @@ async function checkAndToggle() {
   const solaredgeUrl    = process.env.SOLAREDGE_URL;
   const solaredgeToken = process.env.SOLAREDGE_TOKEN;
   const solaredgeClient = process.env.SOLAREDGE_CLIENT;
+  const solaredgeRemmemberMeCookie = process.env.SOLAREDGE_CLIENT;
+  const solaredgeSSO = process.env.SOLAREDGE_SSO;
+  const solaredgeID = process.env.SOLAREDGE_ID;
 
   const cookieString = 
-    `CSRF-TOKEN=${solaredgeToken};` +
-    ` SolarEdge_Client-1.6=${solaredgeToken}`;
+    `CSRF-TOKEN=${solaredgeToken}; ` +
+    `SolarEdge_Client-1.6=${solaredgeToken} `; +
+    'SolarEdge_Locale': 'en_US',
+    'SolarEdge_SSO-1.4': solaredgeSSO,
+    'SolarEdge_Locale': 'en_US',
+    'SPRING_SECURITY_REMEMBER_ME_COOKIE': SOLAREDGE_REMMEMBER_COOKIE,
+    'SolarEdge_Field_ID': solaredgeID,
 
   const headers = {
     "Accept":            "application/json, text/plain, */*",
@@ -32,7 +40,6 @@ async function checkAndToggle() {
     "Referer":           "https://monitoring.solaredge.com/solaredge-web/p/site/3406940/",
     "User-Agent":        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     "X-Requested-With":  "XMLHttpRequest",
-    // now inline:
     "Cookie":            cookieString
   };
   
