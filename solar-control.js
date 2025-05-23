@@ -31,7 +31,7 @@ async function checkAndToggle() {
     'SolarEdge_Locale=en_US '; +
     `SolarEdge_SSO-1.4=${solaredgeSSO} `; +
     `SPRING_SECURITY_REMEMBER_ME_COOKIE=${solaredgeRemmemberMeCookie} `; +
-    `SolarEdge_Field_ID=${solaredgeID}`,
+    `SolarEdge_Field_ID=${solaredgeID}`;
 
   const headers = {
     "Accept":            "application/json, text/plain, */*",
