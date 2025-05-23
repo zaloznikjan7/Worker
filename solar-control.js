@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Ewelink } from "ewelink-api";
+import Ewelink from "ewelink-api";
 import { config } from "dotenv";
 
 config();
