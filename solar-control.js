@@ -13,7 +13,7 @@ async function checkAndToggle() {
   const h = now.getUTCHours();
 
   // Only run between 11 ≤ UTC < 19
-  if (h < 9 || h >= 17) {
+  if (h < 5 || h >= 17) {
     console.log(`Outside 9–17 UTC (hour=${h}) — sleeping only.`);
     return;
   }
