@@ -28,11 +28,10 @@ async function checkAndToggle() {
   const cookieString = 
     `CSRF-TOKEN=${solaredgeToken}; ` +
     `SolarEdge_Client-1.6=${solaredgeToken} `; +
-    'SolarEdge_Locale': 'en_US',
-    'SolarEdge_SSO-1.4': solaredgeSSO,
-    'SolarEdge_Locale': 'en_US',
-    'SPRING_SECURITY_REMEMBER_ME_COOKIE': SOLAREDGE_REMMEMBER_COOKIE,
-    'SolarEdge_Field_ID': solaredgeID,
+    'SolarEdge_Locale=en_US '; +
+    `SolarEdge_SSO-1.4=${solaredgeSSO} `; +
+    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${SOLAREDGE_REMMEMBER_COOKIE} `; +
+    `SolarEdge_Field_ID=${solaredgeID}`,
 
   const headers = {
     "Accept":            "application/json, text/plain, */*",
