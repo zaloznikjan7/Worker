@@ -15,7 +15,9 @@ jobs:
         with:
           node-version: "16"
 
-      - run: npm ci
+      - name: Install dependencies
+        run: npm install
+
 
       - name: Run continuous solar-control
         run: node solar-control.js
