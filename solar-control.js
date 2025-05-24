@@ -17,7 +17,7 @@ async function fetchSolarEdge() {
     SOLAREDGE_CLIENT,
     SOLAREDGE_LOCALE,
     SOLAREDGE_SSO,
-    SPRING_REMEMBER_ME,
+    SOLAREDGE_REMMEMBER_COOKIE,
     SOLAREDGE_FIELD_ID
   } = process.env;
 
@@ -28,7 +28,7 @@ async function fetchSolarEdge() {
     `SolarEdge_Locale=${SOLAREDGE_LOCALE}`,
     `SolarEdge_SSO-1.4=${SOLAREDGE_SSO}`,
     `SolarEdge_Locale=${SOLAREDGE_LOCALE}`,
-    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${SPRING_REMEMBER_ME}`,
+    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${SOLAREDGE_REMMEMBER_COOKIE}`,
     `SolarEdge_Field_ID=${SOLAREDGE_FIELD_ID}`
   ].join("; ");
 
