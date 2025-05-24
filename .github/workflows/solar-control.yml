@@ -28,10 +28,15 @@ jobs:
           SOLAREDGE_TOKEN: ${{ secrets.SOLAREDGE_TOKEN }}
           SOLAREDGE_REMMEMBER_COOKIE: ${{ secrets.SOLAREDGE_REMMEMBER_COOKIE }}
           SOLAREDGE_SSO: ${{ secrets.SOLAREDGE_SSO }}
-          SOLAREDGE_ID: ${{ secrets.SOLAREDGE_ID }}
+          SOLAREDGE_FIELD_ID: ${{ secrets.SOLAREDGE_FIELD_ID }}
           EWELINK_EMAIL:    ${{ secrets.EWELINK_EMAIL }}
           EWELINK_PASSWORD: ${{ secrets.EWELINK_PASSWORD }}
           EWELINK_REGION:   ${{ secrets.EWELINK_REGION }}
           EWELINK_APP_ID:   ${{ secrets.EWELINK_APP_ID }}
           EWELINK_APP_SECRET: ${{ secrets.EWELINK_APP_SECRET }}
+          SOLAREDGE_REFERER: ${{ secrets.SOLAREDGE_REFERER }}
+          SOLAREDGE_COOKIEYES_CONSENT: ${{ secrets.SOLAREDGE_COOKIEYES_CONSENT }}
+          SOLAREDGE_CSRF_TOKEN: ${{ secrets.SOLAREDGE_CSRF_TOKEN }}
+          SOLAREDGE_LOCALE: ${{ secrets.SOLAREDGE_LOCALE }}
+
           
