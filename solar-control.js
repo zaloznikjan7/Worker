@@ -8,6 +8,53 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+async function fetchSolarEdge() {
+  const {
+    SOLAREDGE_URL,
+    SOLAREDGE_REFERER,
+    SOLAREDGE_COOKIEYES_CONSENT,
+    SOLAREDGE_CSRF_TOKEN,
+    SOLAREDGE_CLIENT,
+    SOLAREDGE_LOCALE,
+    SOLAREDGE_SSO,
+    SPRING_REMEMBER_ME,
+    SOLAREDGE_FIELD_ID
+  } = process.env;
+
+  const cookieString = [
+    `cookieyes-consent=${SOLAREDGE_COOKIEYES_CONSENT}`,
+    `CSRF-TOKEN=${SOLAREDGE_CSRF_TOKEN}`,
+    `SolarEdge_Client-1.6=${SOLAREDGE_CLIENT}`,
+    `SolarEdge_Locale=${SOLAREDGE_LOCALE}`,
+    `SolarEdge_SSO-1.4=${SOLAREDGE_SSO}`,
+    `SolarEdge_Locale=${SOLAREDGE_LOCALE}`,
+    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${SPRING_REMEMBER_ME}`,
+    `SolarEdge_Field_ID=${SOLAREDGE_FIELD_ID}`
+  ].join("; ");
+
+  const headers = {
+    "Accept":            "application/json, text/plain, */*",
+    "Accept-Language":   "en-GB,en;q=0.9,sl;q=0.8",
+    "Referer":           SOLAREDGE_REFERER,
+    "User-Agent":        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
+                         "AppleWebKit/537.36 (KHTML, like Gecko) " +
+                         "Chrome/134.0.0.0 Safari/537.36",
+    "X-Requested-With":  "XMLHttpRequest",
+    "Cookie":            cookieString
+  };
+
+  try {
+    const resp = await axios.get(SOLAREDGE_URL, { headers });
+    console.log("✅ Status:", resp.status);
+    console.log("📦 Body:", resp.data);
+    return resp.data;
+  } catch (err) {
+    console.error("❌ fetch failed:", err.response?.status, err.message);
+    throw err;
+  }
+}
+
+
 async function checkAndToggle() {
   const now = new Date();
   const h = now.getUTCHours();
@@ -18,37 +65,7 @@ async function checkAndToggle() {
     return;
   }
 
-  const solaredgeUrl    = process.env.SOLAREDGE_URL;
-  const solaredgeToken = process.env.SOLAREDGE_TOKEN;
-  const solaredgeClient = process.env.SOLAREDGE_CLIENT;
-  const solaredgeRemmemberMeCookie = process.env.SOLAREDGE_REMMEMBER_COOKIE;
-  const solaredgeSSO = process.env.SOLAREDGE_SSO;
-  const solaredgeID = process.env.SOLAREDGE_ID;
-
-  const cookieString = 
-    `CSRF-TOKEN=${solaredgeToken}; ` +
-    `SolarEdge_Client-1.6=${solaredgeClient} `; +
-    'SolarEdge_Locale=en_US '; +
-    `SolarEdge_SSO-1.4=${solaredgeSSO} `; +
-    `SPRING_SECURITY_REMEMBER_ME_COOKIE=${solaredgeRemmemberMeCookie} `; +
-    `SolarEdge_Field_ID=${solaredgeID}`;
-
-  const headers = {
-    "Accept":            "application/json, text/plain, */*",
-    "Accept-Language":   "en-GB,en;q=0.9,sl;q=0.8",
-    "Referer":           "https://monitoring.solaredge.com/solaredge-web/p/site/3406940/",
-    "User-Agent":        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-    "X-Requested-With":  "XMLHttpRequest",
-    "Cookie":            cookieString
-  };
-  
-  try {
-    const resp = await axios.get(solaredgeUrl, { headers });
-    data = resp.data;
-  } catch (e) {
-    console.error("❌ Failed to fetch SolarEdge:", e.message);
-    return;
-  }
+  const data = await fetchSolarEdge();
 
   const load    = parseFloat(data.load.currentPower);
   const pvPower = parseFloat(data.pv.currentPower);
