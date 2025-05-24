@@ -46,10 +46,10 @@ async function fetchSolarEdge() {
   try {
     const resp = await axios.get(SOLAREDGE_URL, { headers });
     console.log("✅ Status:", resp.status);
-    console.log("📦 Body:", resp.data);
+    //console.log("📦 Body:", resp.data);
     return resp.data;
   } catch (err) {
-    console.error("❌ fetch failed:", err.response?.status, err.message);
+    console.error("❌ fetch failed:", err.response?.status);
     throw err;
   }
 }
@@ -60,16 +60,16 @@ async function checkAndToggle() {
   const h = now.getUTCHours();
 
   // Only run between 11 ≤ UTC < 19
-  if (h < 5 || h >= 17) {
+  if (h < 9 || h >= 17) {
     console.log(`Outside 9–17 UTC (hour=${h}) — sleeping only.`);
     return;
   }
 
   const data = await fetchSolarEdge();
 
-  const load    = parseFloat(data.load.currentPower);
-  const pvPower = parseFloat(data.pv.currentPower);
-  console.log(`Grid load=${load}W, PV power=${pvPower}W`);
+  const load    = parseFloat(data.consumption.currentPower);
+  const pvPower = parseFloat(data.solarProduction.currentPower);
+  console.log(`Load=${load}W, PV power=${pvPower}W`);
 
   // 2) Compute stage
   let stage = 0;
@@ -77,7 +77,6 @@ async function checkAndToggle() {
   if (pvPower >= 9)                stage = 2;
   console.log(`→ desired stage=${stage}`);
 
-  // 3) Connect to eWeLink
   const conn = new Ewelink({
     email:       process.env.EWELINK_EMAIL,
     password:    process.env.EWELINK_PASSWORD,
@@ -89,7 +88,6 @@ async function checkAndToggle() {
   const devices  = await conn.getDevices();
   const deviceid = devices[0].deviceid;
 
-  // Toggle helper
   async function ensure(channel, want) {
     const st = await conn.getDevicePowerState(deviceid, channel);
     if (st.state !== want) {
@@ -100,12 +98,10 @@ async function checkAndToggle() {
     }
   }
 
-  // Stage→desired mapping:
   await ensure(1, stage === 2 ? "on"  : "off");
   await ensure(2, stage >= 1  ? "on"  : "off");
 }
 
-// Main loop: run forever, 1 min between
 (async () => {
   console.log("🔄 Starting continuous loop (1 min interval) …");
   while (true) {
@@ -114,7 +110,7 @@ async function checkAndToggle() {
     } catch (err) {
       console.error("🔥 Unexpected error:", err);
     }
-    console.log("⏳ Sleeping 60 s …\n");
-    await sleep(60_000);
+    console.log("⏳ Sleeping 120 s …\n");
+    await sleep(120_000);
   }
 })();
