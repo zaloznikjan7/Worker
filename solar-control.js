@@ -103,7 +103,7 @@ async function checkAndToggle() {
 }
 
 (async () => {
-  console.log("🔄 Starting continuous loop (1 min interval) …");
+  console.log("🔄 Starting continuous loop (2 min interval) …");
   while (true) {
     try {
       await checkAndToggle();
