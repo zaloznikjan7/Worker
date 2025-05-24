@@ -35,7 +35,7 @@ async function fetchSolarEdge() {
   const headers = {
     "Accept":            "application/json, text/plain, */*",
     "Accept-Language":   "en-GB,en;q=0.9,sl;q=0.8",
-    "Referer":           SOLAREDGE_REFERER,
+    "Referer":           process.env.SOLAREDGE_REFERER,
     "User-Agent":        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) " +
                          "AppleWebKit/537.36 (KHTML, like Gecko) " +
                          "Chrome/134.0.0.0 Safari/537.36",
