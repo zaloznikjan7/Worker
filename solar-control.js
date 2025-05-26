@@ -75,6 +75,7 @@ async function checkAndToggle() {
   const gridExport = pvPower - load;
   console.log(`Load=${load}W, PV power=${pvPower}W -> Grid=${gridExport}`);
   await setHeaters(gridExport, counters);
+}
   
 async function setHeaters(gridExport, counters) {
   const conn = new Ewelink({
