@@ -58,7 +58,7 @@ async function fetchSolarEdge() {
 }
 
 
-async function checkAndToggle() {
+async function checkAndToggle(counters) {
   const now = new Date();
   const h = now.getUTCHours();
 
