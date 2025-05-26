@@ -45,6 +45,10 @@ async function fetchSolarEdge() {
 
   try {
     const resp = await axios.get(SOLAREDGE_URL, { headers });
+
+    if (!resp.data || typeof resp.data !== 'object') {
+      throw new Error('Invalid or incomplete response data');
+    }
     console.log("✅ Status:", resp.status);
     return resp.data;
   } catch (err) {
