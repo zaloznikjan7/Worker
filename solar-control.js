@@ -46,7 +46,6 @@ async function fetchSolarEdge() {
   try {
     const resp = await axios.get(SOLAREDGE_URL, { headers });
     console.log("✅ Status:", resp.status);
-    //console.log("📦 Body:", resp.data);
     return resp.data;
   } catch (err) {
     console.error("❌ fetch failed:", err.response?.status);
@@ -69,48 +68,71 @@ async function checkAndToggle() {
 
   const load    = parseFloat(data.consumption.currentPower);
   const pvPower = parseFloat(data.solarProduction.currentPower);
-  console.log(`Load=${load}W, PV power=${pvPower}W`);
-
-  // 2) Compute stage
-  let stage = 0;
-  if (load > 7 && pvPower < 9) stage = 1;
-  if (pvPower >= 9)                stage = 2;
-  console.log(`→ desired stage=${stage}`);
-
+  const gridExport = pvPower - load;
+  console.log(`Load=${load}W, PV power=${pvPower}W -> Grid=${gridExport}`);
+  await setHeaters(gridExport, counters);
+  
+async function setHeaters(gridExport, counters) {
   const conn = new Ewelink({
     email:       process.env.EWELINK_EMAIL,
     password:    process.env.EWELINK_PASSWORD,
     region:      process.env.EWELINK_REGION,
     APP_ID:      process.env.EWELINK_APP_ID,
-    APP_SECRET:  process.env.EWELINK_APP_SECRET
+    APP_SECRET:  process.env.EWELINK_APP_SECRET,
   });
+  const devices = await conn.getDevices();
+  const id      = devices[0].deviceid;
 
-  const devices  = await conn.getDevices();
-  const deviceid = devices[0].deviceid;
+  const st1 = await conn.getDevicePowerState(id, 1);
+  const st2 = await conn.getDevicePowerState(id, 2);
+  const h1On = st1.state === "on";
+  const h2On = st2.state === "on";
 
-  async function ensure(channel, want) {
-    const st = await conn.getDevicePowerState(deviceid, channel);
-    if (st.state !== want) {
-      console.log(`Channel${channel}: ${st.state} → toggling → ${want}`);
-      await conn.setDevicePowerState(deviceid, "toggle", channel);
-    } else {
-      console.log(`Channel${channel} already ${want}`);
+  const adjusted = gridExport - (h1On ? 2 : 0) - (h2On ? 4 : 0);
+
+  let want1 = false, want2 = false;
+  if (adjusted >= 9) {
+    want1 = true; want2 = true;
+  } else if (adjusted >= 7) {
+    want1 = true; want2 = false;
+  }
+
+  async function ensure(ch, currentlyOn, wantOn) {
+    if (currentlyOn !== wantOn) {
+      console.log(`↔︎ Channel${ch}: ${currentlyOn ? "on" : "off"} → toggling → ${wantOn ? "on" : "off"}`);
+      await conn.setDevicePowerState(id, "toggle", ch);
     }
   }
 
-  await ensure(1, stage === 2 ? "on"  : "off");
-  await ensure(2, stage >= 1  ? "on"  : "off");
+  await ensure(1, h1On, want1);
+  await ensure(2, h2On, want2);
+
+  // update counters
+  const key = want1 && want2
+    ? "both"
+    : want1
+      ? "ch1"
+      : "off";
+  counters[key] += 2;
+
+  console.log(
+    `⏱ adjusted=${adjusted.toFixed(2)} kW → state=${key}, ` +
+    `totals: off=${counters.off} m, ch1=${counters.ch1} m, both=${counters.both} m`
+  );
 }
 
+
 (async () => {
-  console.log("🔄 Starting continuous loop (2 min interval) …");
+  console.log("🔄 Starting continuous loop (2 min interval) …");
+  const counters = { off: 0, ch1: 0, both: 0 };
+
   while (true) {
     try {
-      await checkAndToggle();
+      await checkAndToggle(counters);
     } catch (err) {
       console.error("🔥 Unexpected error:", err);
     }
-    console.log("⏳ Sleeping 120 s …\n");
+    console.log("⏳ Sleeping 120 s …\n");
     await sleep(120_000);
   }
 })();
