@@ -16,8 +16,10 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Check out code             # <–– This was missing
+      - name: Check out code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,14 +32,22 @@ jobs:
       - name: Run Jan’s mining step
         run: python mine.py
 
-      - name: Commit state (on success)
+      - name: Commit state (if changed)
         if: ${{ success() }}
         run: |
-          git config --global user.name "github-actions[bot]"
+          git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           git add state_jan.json
-          git commit -m "Update next_run for jan" || echo "No change"
-          git push
+
+          # only commit & push if there *are* staged changes
+          if git diff --cached --quiet; then
+            echo "No changes to commit for Jan."
+          else
+            git commit -m "Update next_run for jan"
+            git pull origin main --rebase
+            git push origin main
+          fi
 
   run-marusa:
     name: Maruša’s Miner
@@ -50,8 +60,10 @@ jobs:
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
       HOST_NAME:   ${{ secrets.HOST_NAME }}
     steps:
-      - name: Check out code             # <–– And here
+      - name: Check out code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -64,11 +76,18 @@ jobs:
       - name: Run Maruša’s mining step
         run: python mine.py
 
-      - name: Commit state (on success)
+      - name: Commit state (if changed)
         if: ${{ success() }}
         run: |
-          git config --global user.name "github-actions[bot]"
+          git config --global user.name  "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
           git add state_marusa.json
-          git commit -m "Update next_run for marusa" || echo "No change"
-          git push
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit for Maruša."
+          else
+            git commit -m "Update next_run for marusa"
+            git pull origin main --rebase
+            git push origin main
+          fi
