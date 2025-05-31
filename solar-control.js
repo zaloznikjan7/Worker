@@ -93,7 +93,7 @@ async function setHeaters(gridExport, counters) {
   const h1On = st1.state === "on";
   const h2On = st2.state === "on";
 
-  const adjusted = gridExport - (h1On ? 2 : 0) - (h2On ? 4 : 0);
+  const adjusted = gridExport + (h1On ? 2 : 0) + (h2On ? 4 : 0);
 
   let want1 = false, want2 = false;
   if (adjusted >= 9) {
