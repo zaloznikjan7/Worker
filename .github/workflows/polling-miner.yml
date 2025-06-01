@@ -40,7 +40,6 @@ jobs:
 
           git add state_jan.json
 
-          # only commit & push if there *are* staged changes
           if git diff --cached --quiet; then
             echo "No changes to commit for Jan."
           else
@@ -88,6 +87,92 @@ jobs:
             echo "No changes to commit for Maruša."
           else
             git commit -m "Update next_run for marusa"
+            git pull origin main --rebase
+            git push origin main
+          fi
+
+  run-srecko:
+    name: Srećko’s Miner
+    needs: run-marusa
+    runs-on: ubuntu-latest
+    env:
+      USER_ID: srecko
+      Auth_bearer: ${{ secrets.SRECKO_AUTH_BEARER }}
+      API_URL:     ${{ secrets.API_URL }}
+      REFERAL_URL: ${{ secrets.REFERAL_URL }}
+      HOST_NAME:   ${{ secrets.HOST_NAME }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run Srećko’s mining step
+        run: python mine.py
+
+      - name: Commit state (if changed)
+        if: ${{ success() }}
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add state_srecko.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit for Srećko."
+          else
+            git commit -m "Update next_run for srecko"
+            git pull origin main --rebase
+            git push origin main
+          fi
+
+  run-alenka:
+    name: Alenka’s Miner
+    needs: run-srecko
+    runs-on: ubuntu-latest
+    env:
+      USER_ID: alenka
+      Auth_bearer: ${{ secrets.ALENKA_AUTH_BEARER }}
+      API_URL:     ${{ secrets.API_URL }}
+      REFERAL_URL: ${{ secrets.REFERAL_URL }}
+      HOST_NAME:   ${{ secrets.HOST_NAME }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run Alenka’s mining step
+        run: python mine.py
+
+      - name: Commit state (if changed)
+        if: ${{ success() }}
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add state_alenka.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit for Alenka."
+          else
+            git commit -m "Update next_run for alenka"
             git pull origin main --rebase
             git push origin main
           fi
