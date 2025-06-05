@@ -131,6 +131,34 @@ async function setHeaters(gridExport, counters) {
   console.log("🔄 Starting continuous loop (2 min interval) …");
   const counters = { off: 0, ch1: 0, both: 0 };
 
+setTimeout(async () => {
+  console.log("⏲ 5 h 59 m reached—turning both heaters OFF and exiting.");
+
+  try {
+    const conn = new Ewelink({
+      email:      process.env.EWELINK_EMAIL,
+      password:   process.env.EWELINK_PASSWORD,
+      region:     process.env.EWELINK_REGION,
+      APP_ID:     process.env.EWELINK_APP_ID,
+      APP_SECRET: process.env.EWELINK_APP_SECRET,
+    });
+
+    const devices = await conn.getDevices();
+    const id = devices[0].deviceid;
+
+    await conn.setDevicePowerState(id, "off", 1);
+    await conn.setDevicePowerState(id, "off", 2);
+
+    console.log("✅ Both heaters are now OFF.");
+  } catch (err) {
+    console.error("❌ Failed to force heaters OFF:", err);
+  }
+
+  process.exit(0);
+}, 21_540_000);
+
+  
+
   while (true) {
     try {
       await checkAndToggle(counters);
