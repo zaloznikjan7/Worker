@@ -8,6 +8,8 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+
 async function fetchSolarEdge() {
   const {
     SOLAREDGE_URL,
@@ -113,7 +115,6 @@ async function setHeaters(gridExport, counters) {
   await ensure(2, h2On, want2);
 
   // add logs
-  const now = new Date();
   const power = (want1 ? 2 : 0) + (want2 ? 4 : 0);
   logs.push({
     ts: now.toISOString(),
@@ -195,6 +196,7 @@ setTimeout(async () => {
 
   while (true) {
     try {
+      const logs = []
       await checkAndToggle(counters);
     } 
     catch (err) {
