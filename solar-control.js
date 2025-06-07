@@ -112,6 +112,14 @@ async function setHeaters(gridExport, counters) {
   await ensure(1, h1On, want1);
   await ensure(2, h2On, want2);
 
+  // add logs
+  const now = new Date();
+  const power = (want1 ? 2 : 0) + (want2 ? 4 : 0);
+  logs.push({
+    ts: now.toISOString(),
+    power
+  });
+
   // update counters
   const key = want1 && want2
     ? "both"
@@ -154,15 +162,42 @@ setTimeout(async () => {
     console.error("❌ Failed to force heaters OFF:", err);
   }
 
+
+    const date = new Date().toISOString().slice(0,10);
+    const runDir = path.join("solar_data_PV","runs");
+    fs.mkdirSync(runDir, { recursive: true });
+    const csvPath = path.join(runDir, `${date}.csv`);
+    const csv = ["timestamp,power", 
+      ...logs.map(r => `${r.ts},${r.power}`) 
+    ].join("\n");
+    fs.writeFileSync(csvPath, csv);
+    console.log(`✅ Dumped ${logs.length} rows to ${csvPath}`);
+
+    try {
+      await new Promise((res, rej) => {
+        execFile("python3", ["report_and_mail.py", csvPath, date], (err, stdout, stderr) => {
+          if (err) {
+            console.error("❌ report_and_mail.py failed:", stderr);
+            return rej(err);
+          }
+          console.log("✅ Report script output:", stdout);
+          res();
+        });
+      });
+    } catch (e) {
+      console.error("❌ Error running report script:", e);
+    }
+
   process.exit(0);
-}, 21_540_000);
+}, 21_420_000);
 
   
 
   while (true) {
     try {
       await checkAndToggle(counters);
-    } catch (err) {
+    } 
+    catch (err) {
       console.error("🔥 Unexpected error:", err);
     }
     console.log("⏳ Sleeping 120 s …\n");
