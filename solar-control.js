@@ -60,7 +60,7 @@ async function fetchSolarEdge() {
 }
 
 
-async function checkAndToggle(counters) {
+async function checkAndToggle(counters, logs) {
   const now = new Date();
   const h = now.getUTCHours();
 
@@ -76,10 +76,10 @@ async function checkAndToggle(counters) {
   const pvPower = parseFloat(data.solarProduction.currentPower);
   const gridExport = pvPower - load;
   console.log(`Load=${load}W, PV power=${pvPower}W -> Grid=${gridExport}`);
-  await setHeaters(gridExport, counters);
+  await setHeaters(gridExport, counters, logs);
 }
   
-async function setHeaters(gridExport, counters) {
+async function setHeaters(gridExport, counters, logs) {
   const conn = new Ewelink({
     email:       process.env.EWELINK_EMAIL,
     password:    process.env.EWELINK_PASSWORD,
@@ -117,7 +117,7 @@ async function setHeaters(gridExport, counters) {
   // add logs
   const power = (want1 ? 2 : 0) + (want2 ? 4 : 0);
   logs.push({
-    ts: now.toISOString(),
+    ts: new Date().toISOString(),
     power
   });
 
@@ -139,6 +139,7 @@ async function setHeaters(gridExport, counters) {
 (async () => {
   console.log("🔄 Starting continuous loop (2 min interval) …");
   const counters = { off: 0, ch1: 0, both: 0 };
+  const logs = [];
 
 setTimeout(async () => {
   console.log("⏲ 5 h 59 m reached—turning both heaters OFF and exiting.");
@@ -196,8 +197,7 @@ setTimeout(async () => {
 
   while (true) {
     try {
-      const logs = []
-      await checkAndToggle(counters);
+      await checkAndToggle(counters, logs);
     } 
     catch (err) {
       console.error("🔥 Unexpected error:", err);
