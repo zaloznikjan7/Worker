@@ -55,7 +55,7 @@ def main(csv_path, date):
         img = f.read()
     msg.add_attachment(img, maintype="image", subtype="png", filename=f"{date}.png")
 
-    with smtplib.SMTP_SSL('smtp.gmail.com', 587) as s:
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
         s.login(os.environ["EMAIL_USER"], os.environ["EMAIL_PASS"])
         s.send_message(msg)
     print("Email sent.")
