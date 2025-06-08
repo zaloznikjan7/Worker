@@ -7,6 +7,8 @@ import matplotlib.dates as mdates
 
 def main(csv_path, date):
     df = pd.read_csv(csv_path, parse_dates=["timestamp"])
+    df["timestamp"] = df["timestamp"].dt.tz_localize("UTC")
+    df["timestamp"] = df["timestamp"].dt.tz_convert("Europe/Ljubljana")
     df.set_index("timestamp", inplace=True)
 
     fig, (ax1, ax2) = plt.subplots(
