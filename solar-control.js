@@ -2,6 +2,10 @@ import axios from "axios";
 import Ewelink from "ewelink-api";
 import { config } from "dotenv";
 
+import fs from "fs";
+import path from "path";
+import { execFile } from "child_process";
+
 config();
 
 function sleep(ms) {
