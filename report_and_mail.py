@@ -34,11 +34,11 @@ def main(csv_path, date):
     durations = {
         0: counts.get(0, 0) * interval_min,
         2: counts.get(2, 0) * interval_min,
-        6: counts.get(6, 0) * interval_min
+        4: counts.get(4, 0) * interval_min
     }
     
-    labels = ['Off (0 kW)', 'Ch1 (2 kW)', 'Both (6 kW)']
-    sizes = [durations[0], durations[2], durations[6]]
+    labels = ['Off (0 kW)', 'Ch2 (2 kW)', 'Both (4 kW)']
+    sizes = [durations[0], durations[2], durations[4]]
     labels_h = [f"{labels[i]}: {sizes[i]/60:.2f} h" for i in range(3)]
     
     ax2.pie(sizes, labels=labels_h, autopct="%1.1f%%", startangle=90)
@@ -56,6 +56,7 @@ def main(csv_path, date):
     msg["Subject"] = f"Daily Heater Report {date}"
     msg["From"]    = os.environ["EMAIL_USER"]
     msg["To"]      = os.environ["EMAIL_TO"]
+    msg["Cc"]      = os.environ["EMAIL_USER"]
     msg.set_content(f"Attached is the heater usage plot for {date}.")
     with open(plot_path, "rb") as f:
         img = f.read()
