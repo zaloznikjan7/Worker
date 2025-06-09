@@ -68,14 +68,8 @@ async function checkAndToggle(counters, logs) {
   const now = new Date();
   const h = now.getUTCHours();
 
-  // Only run between 11 ≤ UTC < 19
-  if (h < 8 || h >= 17) {
-    console.log(`Outside 9–17 UTC (hour=${h}) — sleeping only.`);
-    return;
-  }
-
+  
   const data = await fetchSolarEdge();
-
   const load    = parseFloat(data.consumption.currentPower);
   const pvPower = parseFloat(data.solarProduction.currentPower);
   const gridExport = pvPower - load;
@@ -98,14 +92,16 @@ async function setHeaters(gridExport, counters, logs) {
   const st2 = await conn.getDevicePowerState(id, 2);
   const h1On = st1.state === "on";
   const h2On = st2.state === "on";
+  const ch1_kw = 2;
+  const ch2_kw = 2;
 
-  const adjusted = gridExport + (h1On ? 2 : 0) + (h2On ? 4 : 0);
+  const adjusted = gridExport + (h1On ? ch1_kw : 0) + (h2On ? ch2_kw : 0);
 
   let want1 = false, want2 = false;
-  if (adjusted >= 9) {
+  if (adjusted >= 7 && h20n) { // tu ne vemo še al tut ko je voda že topla če se izklopi al sam ne greje in kaže da je on
     want1 = true; want2 = true;
   } else if (adjusted >= 7) {
-    want1 = true; want2 = false;
+    want1 = false; want2 = true;
   }
 
   async function ensure(ch, currentlyOn, wantOn) {
@@ -119,7 +115,7 @@ async function setHeaters(gridExport, counters, logs) {
   await ensure(2, h2On, want2);
 
   // add logs
-  const power = (want1 ? 2 : 0) + (want2 ? 4 : 0);
+  const power = (want1 ? ch1_kw : 0) + (want2 ? ch2_kw : 0);
   logs.push({
     ts: new Date().toISOString(),
     power
@@ -195,7 +191,7 @@ setTimeout(async () => {
     }
 
   process.exit(0);
-}, 21_420_000); //
+}, 21_480_000); //
 
   
 
