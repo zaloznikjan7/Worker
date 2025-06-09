@@ -51,7 +51,7 @@ jobs:
           SOLAREDGE_LOCALE: ${{ secrets.SOLAREDGE_LOCALE }}
 
           EMAIL_USER: ${{ secrets.EMAIL_USER_LOCAL }}@gmail.com
-          EMAIL_TO:   ${{ secrets.EMAIL_USER_ATI }}@gmail.com #EMAIL_USER_ATI
+          EMAIL_TO:   ${{ secrets.EMAIL_USER_ATI }}@yahoo.com #EMAIL_USER_ATI
           EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
 
           
