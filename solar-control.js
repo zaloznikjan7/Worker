@@ -98,7 +98,7 @@ async function setHeaters(gridExport, counters, logs) {
   const adjusted = gridExport + (h1On ? ch1_kw : 0) + (h2On ? ch2_kw : 0);
 
   let want1 = false, want2 = false;
-  if (adjusted >= 7 && h20n) { // tu ne vemo še al tut ko je voda že topla če se izklopi al sam ne greje in kaže da je on
+  if (adjusted >= 7 && h2On) { // tu ne vemo še al tut ko je voda že topla če se izklopi al sam ne greje in kaže da je on
     want1 = true; want2 = true;
   } else if (adjusted >= 7) {
     want1 = false; want2 = true;
