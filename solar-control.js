@@ -98,7 +98,7 @@ async function setHeaters(gridExport, counters, logs) {
   const adjusted = gridExport + (h1On ? ch1_kw : 0) + (h2On ? ch2_kw : 0);
 
   let want1 = false, want2 = false;
-  if (adjusted >= 7 && h2On) { // tu ne vemo še al tut ko je voda že topla če se izklopi al sam ne greje in kaže da je on
+  if (adjusted >= 9 && h2On) { // tu ne vemo še al tut ko je voda že topla če se izklopi al sam ne greje in kaže da je on
     want1 = true; want2 = true;
   } else if (adjusted >= 7) {
     want1 = false; want2 = true;
@@ -122,23 +122,31 @@ async function setHeaters(gridExport, counters, logs) {
   });
 
   // update counters
-  const key = want1 && want2
-    ? "both"
-    : want1
-      ? "ch1"
-      : "off";
+  let key;
+  if (want1 && want2) {
+      key = "both";
+    } else if (want2) {
+      key = "ch2";
+    } else if (want1) {
+      key = "ch1";
+    } else {
+      key = "off";
+    }
   counters[key] += 2;
 
   console.log(
     `⏱ adjusted=${adjusted.toFixed(2)} kW → state=${key}, ` +
-    `totals: off=${counters.off} m, ch1=${counters.ch1} m, both=${counters.both} m`
+    `totals: off=${counters.off} m, ` +
+    `ch1=${counters.ch1} m, ` +
+    `ch2=${counters.ch2} m, ` +
+    `both=${counters.both} m`
   );
 }
 
 
 (async () => {
   console.log("🔄 Starting continuous loop (2 min interval) …");
-  const counters = { off: 0, ch1: 0, both: 0 };
+  const counters = { off: 0, ch1: 0, ch2: 0, both: 0 };
   const logs = [];
 
 setTimeout(async () => {
