@@ -219,3 +219,45 @@ jobs:
             git pull origin main --rebase
             git push origin main
           fi
+  run-zala:
+    name: Zala’s Miner
+    needs: run-matic
+    runs-on: ubuntu-latest
+    env:
+      USER_ID: matic
+      Auth_bearer: ${{ secrets.ZALA_AUTH_BEARER }}
+      API_URL:     ${{ secrets.API_URL }}
+      REFERAL_URL: ${{ secrets.REFERAL_URL }}
+      HOST_NAME:   ${{ secrets.HOST_NAME }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Run Zala’s mining step
+        run: python mine.py
+
+      - name: Commit state (if changed)
+        if: ${{ success() }}
+        run: |
+          git config --global user.name  "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add state_zala.json
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit for Zala."
+          else
+            git commit -m "Update next_run for Zala"
+            git pull origin main --rebase
+            git push origin main
+          fi
