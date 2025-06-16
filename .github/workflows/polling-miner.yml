@@ -224,7 +224,7 @@ jobs:
     needs: run-matic
     runs-on: ubuntu-latest
     env:
-      USER_ID: matic
+      USER_ID: zala
       Auth_bearer: ${{ secrets.ZALA_AUTH_BEARER }}
       API_URL:     ${{ secrets.API_URL }}
       REFERAL_URL: ${{ secrets.REFERAL_URL }}
